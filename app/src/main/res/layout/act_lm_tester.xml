@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent" >
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <Button
+        style="@style/BaseButton"
+        android:onClick="removeAll"
+        android:text="@string/lm_remove_all" />
+
+    <Button
+        style="@style/BaseButton"
+        android:onClick="requestUpdatesAPI1"
+        android:text="@string/lm_request_updates_api1" />
+
+    <Button
+        style="@style/BaseButton"
+        android:onClick="requestUpdatesAPI2"
+        android:text="@string/lm_request_updates_api2" />
+
+    <Button
+        style="@style/BaseButton"
+        android:onClick="requestUpdatesAPI3"
+        android:text="@string/lm_request_updates_api3" />
+
+    <Button
+        style="@style/BaseButton"
+        android:onClick="requestUpdatesAPI4"
+        android:text="@string/lm_request_updates_api4" />
+
+    <Button
+        style="@style/BaseButton"
+        android:onClick="requestUpdatesAPI5"
+        android:text="@string/lm_request_updates_api5" />
+
+    <Button
+        style="@style/BaseButton"
+        android:onClick="requestUpdatesNetwork"
+        android:text="@string/lm_request_updates_network" />
+
+    <Button
+        style="@style/BaseButton"
+        android:onClick="requestUpdatesPassive"
+        android:text="@string/lm_request_updates_passive" />
+
+    <Button
+        style="@style/BaseButton"
+        android:onClick="requestUpdatesFused"
+        android:text="@string/lm_request_updates_fused" />
+
+    <Button
+        style="@style/BaseButton"
+        android:onClick="requestUpdatesMock"
+        android:text="@string/lm_request_updates_mock" />
+
+    <Button
+        style="@style/BaseButton"
+        android:onClick="addProximityAlert"
+        android:text="@string/lm_add_proximity_alert" />
+
+    <Button
+        style="@style/BaseButton"
+        android:onClick="removeProximityAlert"
+        android:text="@string/lm_remove_proximity_alert" />
+
+    <Button
+        style="@style/BaseButton"
+        android:onClick="addTestProvider"
+        android:text="@string/lm_add_test_provider"/>
+
+    <Button
+        style="@style/BaseButton"
+        android:onClick="removeTestProvider"
+        android:text="@string/lm_remove_test_provider"/>
+
+    <Button
+        style="@style/BaseButton"
+        android:onClick="setTestProviderLocation"
+        android:text="@string/lm_set_test_provider_location"/>
+</LinearLayout>
+</ScrollView>

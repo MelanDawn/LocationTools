@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">LocationTools</string>
+
+    <string name="lm_remove_all">Remove All Request</string>
+    <string name="lm_request_updates_api1">Request Location Updates API 1</string>
+    <string name="lm_request_updates_api2">Request Location Updates API 2</string>
+    <string name="lm_request_updates_api3">Request Location Updates API 3</string>
+    <string name="lm_request_updates_api4">Request Location Updates API 4</string>
+    <string name="lm_request_updates_api5">Request Location Updates API 5</string>
+    <string name="lm_request_updates_network">Request Location NETWORK</string>
+    <string name="lm_request_updates_passive">Request Location PASSIVE</string>
+    <string name="lm_request_updates_fused">Request Location FUSED</string>
+    <string name="lm_request_updates_mock">Request Location MOCK</string>
+    <string name="lm_add_proximity_alert">AddProximityAlert</string>
+    <string name="lm_remove_proximity_alert">RemoveProximityAlert</string>
+    <string name="lm_add_test_provider">AddTestProvider</string>
+    <string name="lm_remove_test_provider">RemoveTestProvider</string>
+    <string name="lm_set_test_provider_location">SetTestProviderLocation</string>
+</resources>
