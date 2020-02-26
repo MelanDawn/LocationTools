@@ -7,7 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.location.Address;
 import android.location.Criteria;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -16,8 +18,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.View;
 
+import com.zs.location.App;
 import com.zs.location.R;
 import com.zs.location.base.BaseActivity;
 import com.zs.location.utils.LogUtil;
@@ -44,7 +48,10 @@ public class LMTesterAct extends BaseActivity {
     private LocationListener mGnssLocationListener3 = new MyLocationListener("GNSS3");
     private LocationListener mGnssLocationListener4 = new MyLocationListener("GNSS4");
     private LocationListener mGnssLocationListener5 = new MyLocationListener("GNSS5");
-    private LocationListener mNetworkLocationListener = new MyLocationListener("NETWORK");
+    private LocationListener mNetworkLocationListener1 = new MyLocationListener("NETWORK1");
+    private LocationListener mNetworkLocationListener2 = new MyLocationListener("NETWORK2");
+    private LocationListener mNetworkLocationListener3 = new MyLocationListener("NETWORK3");
+    private LocationListener mNetworkLocationListener4 = new MyLocationListener("NETWORK4");
     private LocationListener mPassiveLocationListener = new MyLocationListener("PASSIVE");
     private LocationListener mFusedLocationListener = new MyLocationListener("FUSED");
     private LocationListener mMockLocationListener = new MyLocationListener("MOCK");
@@ -122,6 +129,17 @@ public class LMTesterAct extends BaseActivity {
 
 
         LogUtil.d(TAG, "===============================================");
+
+        Geocoder geocoder = new Geocoder(App.context);
+        try {
+            List<Address> list = geocoder.getFromLocation(33.64, -116.96, 3);
+            for (Address address : list) {
+                LogUtil.d(TAG, address);
+                LogUtil.printBundle(TAG, address.getExtras());
+            }
+        } catch (Exception e) {
+            LogUtil.e(TAG, "geocoder", e);
+        }
     }
 
     @Override
@@ -150,7 +168,7 @@ public class LMTesterAct extends BaseActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        removeAll();
+//        removeAll();
     }
 
     public void removeAll(View view) {
@@ -200,9 +218,27 @@ public class LMTesterAct extends BaseActivity {
         }
     }
 
-    public void requestUpdatesNetwork(View view) {
+    public void requestUpdatesNetwork1(View view) {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 1F, mNetworkLocationListener);
+            mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 1F, mNetworkLocationListener1);
+        }
+    }
+
+    public void requestUpdatesNetwork2(View view) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 30_000, 1F, mNetworkLocationListener2);
+        }
+    }
+
+    public void requestUpdatesNetwork3(View view) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 40_000, 1F, mNetworkLocationListener3);
+        }
+    }
+
+    public void requestUpdatesNetwork4(View view) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 50_000, 1F, mNetworkLocationListener4);
         }
     }
 
@@ -238,7 +274,8 @@ public class LMTesterAct extends BaseActivity {
                 Intent intent = new Intent();
                 intent.setAction(ACTION_PROXIMITY_ALERT);
                 mProximityAlertIntent = PendingIntent.getBroadcast(this, 10, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                mLocationManager.addProximityAlert(31.065395, 121.394601, 1000F, -1, mProximityAlertIntent);
+//                mLocationManager.addProximityAlert(31.065395, 121.394601, 1000F, -1, mProximityAlertIntent);
+                mLocationManager.addProximityAlert(30, 120, 100F, -1, mProximityAlertIntent);
             } catch (Exception e) {
                 LogUtil.e(TAG, "requestUpdatesMock", e);
             }
@@ -261,8 +298,10 @@ public class LMTesterAct extends BaseActivity {
     public void setTestProviderLocation(View view) {
         String name = LocationManager.GPS_PROVIDER;
         Location location = new Location(name);
-        location.setLatitude(31.065395);
-        location.setLongitude(121.394601);
+//        location.setLatitude(31.065395);
+////        location.setLongitude(121.394601);
+        location.setLatitude(30D);
+        location.setLongitude(120D);
         location.setAccuracy(20F);
         location.setAltitude(100D);
         location.setBearing(181F);
@@ -284,7 +323,10 @@ public class LMTesterAct extends BaseActivity {
         mLocationManager.removeUpdates(mGnssLocationListener3);
         mLocationManager.removeUpdates(mGnssLocationListener4);
         mLocationManager.removeUpdates(mGnssLocationListener5);
-        mLocationManager.removeUpdates(mNetworkLocationListener);
+        mLocationManager.removeUpdates(mNetworkLocationListener1);
+        mLocationManager.removeUpdates(mNetworkLocationListener2);
+        mLocationManager.removeUpdates(mNetworkLocationListener3);
+        mLocationManager.removeUpdates(mNetworkLocationListener4);
         mLocationManager.removeUpdates(mPassiveLocationListener);
         mLocationManager.removeUpdates(mFusedLocationListener);
         mLocationManager.removeUpdates(mMockLocationListener);
@@ -297,9 +339,20 @@ public class LMTesterAct extends BaseActivity {
         MyLocationListener(String name) {
             mName = name;
         }
+
         @Override
         public void onLocationChanged(final Location location) {
             LogUtil.d(TAG, mName, "onLocationChanged", location);
+            if (LocationManager.NETWORK_PROVIDER.equals(location.getProvider())) {
+                Bundle bundle = location.getExtras();
+                LogUtil.printBundle(TAG, bundle);
+                if (bundle != null) {
+                    Address address = (Address) bundle.get("address");
+                    if (address != null) {
+                        LogUtil.printBundle(TAG, address.getExtras());
+                    }
+                }
+            }
         }
 
         @Override
@@ -335,7 +388,7 @@ public class LMTesterAct extends BaseActivity {
                 LogUtil.d(TAG, SUB_TAG, "location service status changed");
             } else if (LocationManager.PROVIDERS_CHANGED_ACTION.equals(intent.getAction())) {
                 String extra = "NULL";
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     extra = intent.getStringExtra(LocationManager.EXTRA_PROVIDER_NAME);
                 }
                 LogUtil.d(TAG, SUB_TAG, "provider changed", extra);

@@ -1,8 +1,11 @@
 package com.zs.location.utils;
 
+import android.os.Bundle;
 import android.util.Log;
 
 import com.zs.location.App;
+
+import java.util.Set;
 
 public class LogUtil {
 
@@ -31,13 +34,40 @@ public class LogUtil {
     }
 
     private static String formatLog(Object... msg){
+        Thread t = Thread.currentThread();
         StringBuilder sb = new StringBuilder();
-        sb.append("[").append(TAG).append("]");
+        sb.append("[")
+                .append(TAG)
+                .append("--")
+                .append(t.getName())
+                .append(", ")
+                .append(t.getId())
+                .append(", ")
+                .append(t.getThreadGroup() == null ? "NULL" : t.getThreadGroup().getName())
+                .append("]");
         if (msg != null) {
             for (Object message : msg) {
                 sb.append(" ").append(message == null ? "NULL" : message.toString());
             }
         }
         return sb.substring(0, sb.length());
+    }
+
+    public static void printBundle(String tag, Bundle bundle) {
+        StringBuilder sb = new StringBuilder();
+        if (bundle == null) {
+            sb.append("NULL");
+        } else {
+            Set<String> set = bundle.keySet();
+            if (set.size() == 0) {
+                sb.append("NULL");
+            } else {
+                for (String key : set) {
+                    Object value = bundle.get(key);
+                    sb.append(key).append("=").append(value == null ? "NULL" : value.toString()).append(", ");
+                }
+            }
+        }
+        d(tag, sb.substring(0));
     }
 }

@@ -16,32 +16,47 @@
     <Button
         style="@style/BaseButton"
         android:onClick="requestUpdatesAPI1"
-        android:text="@string/lm_request_updates_api1" />
+        android:text="@string/lm_request_updates_gnss_1" />
 
     <Button
         style="@style/BaseButton"
         android:onClick="requestUpdatesAPI2"
-        android:text="@string/lm_request_updates_api2" />
+        android:text="@string/lm_request_updates_gnss_2" />
 
     <Button
         style="@style/BaseButton"
         android:onClick="requestUpdatesAPI3"
-        android:text="@string/lm_request_updates_api3" />
+        android:text="@string/lm_request_updates_gnss_3" />
 
     <Button
         style="@style/BaseButton"
         android:onClick="requestUpdatesAPI4"
-        android:text="@string/lm_request_updates_api4" />
+        android:text="@string/lm_request_updates_gnss_4" />
 
     <Button
         style="@style/BaseButton"
         android:onClick="requestUpdatesAPI5"
-        android:text="@string/lm_request_updates_api5" />
+        android:text="@string/lm_request_updates_gnss_5" />
 
     <Button
         style="@style/BaseButton"
-        android:onClick="requestUpdatesNetwork"
-        android:text="@string/lm_request_updates_network" />
+        android:onClick="requestUpdatesNetwork1"
+        android:text="@string/lm_request_updates_network_1" />
+
+    <Button
+        style="@style/BaseButton"
+        android:onClick="requestUpdatesNetwork2"
+        android:text="@string/lm_request_updates_network_2" />
+
+    <Button
+        style="@style/BaseButton"
+        android:onClick="requestUpdatesNetwork3"
+        android:text="@string/lm_request_updates_network_3" />
+
+    <Button
+        style="@style/BaseButton"
+        android:onClick="requestUpdatesNetwork4"
+        android:text="@string/lm_request_updates_network_4" />
 
     <Button
         style="@style/BaseButton"

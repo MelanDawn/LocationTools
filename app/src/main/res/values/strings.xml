@@ -2,12 +2,15 @@
     <string name="app_name">LocationTools</string>
 
     <string name="lm_remove_all">Remove All Request</string>
-    <string name="lm_request_updates_api1">Request Location Updates API 1</string>
-    <string name="lm_request_updates_api2">Request Location Updates API 2</string>
-    <string name="lm_request_updates_api3">Request Location Updates API 3</string>
-    <string name="lm_request_updates_api4">Request Location Updates API 4</string>
-    <string name="lm_request_updates_api5">Request Location Updates API 5</string>
-    <string name="lm_request_updates_network">Request Location NETWORK</string>
+    <string name="lm_request_updates_gnss_1">Request Location GNSS1 1s</string>
+    <string name="lm_request_updates_gnss_2">Request Location GNSS2 2s</string>
+    <string name="lm_request_updates_gnss_3">Request Location GNSS3 3s</string>
+    <string name="lm_request_updates_gnss_4">Request Location GNSS4 4s</string>
+    <string name="lm_request_updates_gnss_5">Request Location GNSS5 5s</string>
+    <string name="lm_request_updates_network_1">Request Location NETWORK1 1s</string>
+    <string name="lm_request_updates_network_2">Request Location NETWORK2 30s</string>
+    <string name="lm_request_updates_network_3">Request Location NETWORK3 40s</string>
+    <string name="lm_request_updates_network_4">Request Location NETWORK4 50s</string>
     <string name="lm_request_updates_passive">Request Location PASSIVE</string>
     <string name="lm_request_updates_fused">Request Location FUSED</string>
     <string name="lm_request_updates_mock">Request Location MOCK</string>
