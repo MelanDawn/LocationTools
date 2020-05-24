@@ -1,11 +1,6 @@
 package com.zs.location.utils;
 
-import android.os.Bundle;
 import android.util.Log;
-
-import com.zs.location.App;
-
-import java.util.Set;
 
 public class LogUtil {
 
@@ -40,9 +35,9 @@ public class LogUtil {
                 .append(TAG)
                 .append("--")
                 .append(t.getName())
-                .append(", ")
+                .append(",")
                 .append(t.getId())
-                .append(", ")
+                .append(",")
                 .append(t.getThreadGroup() == null ? "NULL" : t.getThreadGroup().getName())
                 .append("]");
         if (msg != null) {
@@ -51,23 +46,5 @@ public class LogUtil {
             }
         }
         return sb.substring(0, sb.length());
-    }
-
-    public static void printBundle(String tag, Bundle bundle) {
-        StringBuilder sb = new StringBuilder();
-        if (bundle == null) {
-            sb.append("NULL");
-        } else {
-            Set<String> set = bundle.keySet();
-            if (set.size() == 0) {
-                sb.append("NULL");
-            } else {
-                for (String key : set) {
-                    Object value = bundle.get(key);
-                    sb.append(key).append("=").append(value == null ? "NULL" : value.toString()).append(", ");
-                }
-            }
-        }
-        d(tag, sb.substring(0));
     }
 }

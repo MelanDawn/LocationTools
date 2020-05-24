@@ -10,7 +10,13 @@
 
         <Button
             style="@style/BaseButton"
-            android:onClick="toLmTester"
+            android:onClick="toLocationManager"
             android:text="@string/main_to_lm_tester" />
+
+        <Button
+            style="@style/BaseButton"
+            android:onClick="toGeocodeAct"
+            android:text="@string/main_to_geocode" />
+
     </LinearLayout>
 </ScrollView>

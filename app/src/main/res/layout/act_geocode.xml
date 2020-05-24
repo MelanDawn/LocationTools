@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/geocode_location_name"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:inputType="text"
+        android:gravity="center_vertical|start"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:textSize="18sp"
+        android:hint="请输入地名"
+        android:autofillHints="@android:string/autofill"
+        android:textColor="@android:color/black" />
+
+    <Button
+        style="@style/BaseButton"
+        android:onClick="handleGeocoding"
+        android:text="执行地理编码"/>
+
+    <EditText
+        android:id="@+id/geocode_lat"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:inputType="numberDecimal"
+        android:gravity="center_vertical|start"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:textSize="18sp"
+        android:hint="请输入纬度[-90.0, 90.0]"
+        android:autofillHints="@android:string/autofill"
+        android:textColor="@android:color/black" />
+
+    <EditText
+        android:id="@+id/geocode_lng"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:inputType="numberDecimal"
+        android:gravity="center_vertical|start"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:textSize="18sp"
+        android:hint="请输入经度[-180.0, 180.0]"
+        android:autofillHints="@android:string/autofill"
+        android:textColor="@android:color/black" />
+    <Button
+        style="@style/BaseButton"
+        android:onClick="handleReverseGeocoding"
+        android:text="执行逆地理编码"/>
+
+</LinearLayout>

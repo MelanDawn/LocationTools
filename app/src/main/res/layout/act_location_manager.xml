@@ -8,6 +8,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@android:color/holo_red_light"/>
+
         <Button
             style="@style/BaseButton"
             android:onClick="removeAll"
@@ -73,6 +78,61 @@
             android:onClick="requestUpdatesMock"
             android:text="@string/lm_request_updates_mock" />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@android:color/holo_red_light"/>
+
+        <Button
+            style="@style/BaseButton"
+            android:onClick="sendExtraCommand"
+            android:text="@string/lm_send_extra_command" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@android:color/holo_red_light"/>
+
+        <Button
+            style="@style/BaseButton"
+            android:onClick="addNmeaListener"
+            android:text="@string/lm_add_nmea_listener" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@android:color/holo_red_light"/>
+
+        <Button
+            style="@style/BaseButton"
+            android:onClick="registerGnssStatusCallback"
+            android:text="@string/lm_register_gnss_status_cb" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@android:color/holo_red_light"/>
+
+        <Button
+            style="@style/BaseButton"
+            android:onClick="registerGnssNavigationMessageCallback"
+            android:text="@string/lm_register_gnss_navigation_message_cb" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@android:color/holo_red_light"/>
+
+        <Button
+            style="@style/BaseButton"
+            android:onClick="registerGnssMeasurementsCallback"
+            android:text="@string/lm_register_gnss_measurement_event_cb" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@android:color/holo_red_light"/>
+
         <Button
             style="@style/BaseButton"
             android:onClick="addProximityAlert"
@@ -82,6 +142,11 @@
             style="@style/BaseButton"
             android:onClick="removeProximityAlert"
             android:text="@string/lm_remove_proximity_alert" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@android:color/holo_red_light"/>
 
         <Button
             style="@style/BaseButton"
@@ -97,5 +162,11 @@
             style="@style/BaseButton"
             android:onClick="setTestProviderLocation"
             android:text="@string/lm_set_test_provider_location"/>
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@android:color/holo_red_light"/>
     </LinearLayout>
 </ScrollView>

@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">LocationTools</string>
-    <string name="main_to_lm_tester">toLmTester</string>
+    <string name="main_to_lm_tester">to LocationManager</string>
+    <string name="main_to_geocode">to Geocoder</string>
 
     <string name="lm_remove_all">Remove All Request</string>
     <string name="lm_request_updates_gnss_1">Request Location GNSS1 1s</string>
@@ -15,6 +16,11 @@
     <string name="lm_request_updates_passive">Request Location PASSIVE</string>
     <string name="lm_request_updates_fused">Request Location FUSED</string>
     <string name="lm_request_updates_mock">Request Location MOCK</string>
+    <string name="lm_send_extra_command">Send extra Command</string>
+    <string name="lm_add_nmea_listener">addNmeaListener</string>
+    <string name="lm_register_gnss_status_cb">registerGnssStatusCallback</string>
+    <string name="lm_register_gnss_navigation_message_cb">registerGnssNavigationMessageCallback</string>
+    <string name="lm_register_gnss_measurement_event_cb">registerGnssMeasurementsCallback</string>
     <string name="lm_add_proximity_alert">AddProximityAlert</string>
     <string name="lm_remove_proximity_alert">RemoveProximityAlert</string>
     <string name="lm_add_test_provider">AddTestProvider</string>
