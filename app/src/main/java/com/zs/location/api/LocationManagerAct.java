@@ -22,8 +22,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.SystemClock;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.zs.location.R;
 import com.zs.location.base.BaseActivity;
@@ -39,8 +41,11 @@ import androidx.annotation.Nullable;
 
 public class LocationManagerAct extends BaseActivity {
 
+    private static final String INTENT_ACTION3 = "com.zs.location.NETWORK_PENDING_INTENT3";
+
     private static final String INTENT_ACTION4 = "com.zs.location.GNSS_PENDING_INTENT4";
     private static final String INTENT_ACTION5 = "com.zs.location.GNSS_PENDING_INTENT5";
+
     private static final String ACTION_PROXIMITY_ALERT = "com.zs.location.PROXIMITY_ALERT";
 
     private static final String CMD_DELETE_AIDING_DATA = "delete_aiding_data";
@@ -63,17 +68,22 @@ public class LocationManagerAct extends BaseActivity {
     private LocationListener mGnssLocationListener1 = new MyLocationListener("GNSS1");
     private LocationListener mGnssLocationListener2 = new MyLocationListener("GNSS2");
     private LocationListener mGnssLocationListener3 = new MyLocationListener("GNSS3");
-    private LocationListener mGnssLocationListener4 = new MyLocationListener("GNSS4");
-    private LocationListener mGnssLocationListener5 = new MyLocationListener("GNSS5");
+    private PendingIntent mGnssPendingIntent4 = null;
+    private PendingIntent mGnssPendingIntent5 = null;
     private LocationListener mNetworkLocationListener1 = new MyLocationListener("NETWORK1");
     private LocationListener mNetworkLocationListener2 = new MyLocationListener("NETWORK2");
-    private LocationListener mNetworkLocationListener3 = new MyLocationListener("NETWORK3");
+    private PendingIntent mNetworkPendingIntent3 = null;
     private LocationListener mNetworkLocationListener4 = new MyLocationListener("NETWORK4");
     private LocationListener mPassiveLocationListener = new MyLocationListener("PASSIVE");
     private LocationListener mFusedLocationListener = new MyLocationListener("FUSED");
     private LocationListener mMockLocationListener = new MyLocationListener("MOCK");
 
     private PendingIntent mProximityAlertIntent = null;
+
+    private final String mFusedProviderName = "fused";
+
+    private String mMockProviderName = "abc";
+    private boolean mMockEnabled = false;
 
     // GNSS/GPS Status and NMEA call back
     private GnssStatus.Callback mGnssStatusListener;
@@ -106,6 +116,7 @@ public class LocationManagerAct extends BaseActivity {
     protected void onResume() {
         super.onResume();
         IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(INTENT_ACTION3);
         intentFilter.addAction(INTENT_ACTION4);
         intentFilter.addAction(INTENT_ACTION5);
         intentFilter.addAction(ACTION_PROXIMITY_ALERT);
@@ -123,7 +134,7 @@ public class LocationManagerAct extends BaseActivity {
     @Override
     protected void onStop() {
         super.onStop();
-//        removeAll();
+        removeAll();
     }
 
     public void removeAll(View view) {
@@ -137,6 +148,7 @@ public class LocationManagerAct extends BaseActivity {
         if (PermissionUtil.checkLocationPermission(this)) {
             mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0F, mGnssLocationListener1);
         }
+        // It will cause an Exception when request location at a no looper thread.
 //        new Thread(new Runnable() {
 //            @Override
 //            public void run() {
@@ -167,23 +179,27 @@ public class LocationManagerAct extends BaseActivity {
 
     public void requestUpdatesAPI4(View view) {
         if (PermissionUtil.checkLocationPermission(this)) {
-            Intent intent4 = new Intent();
-            intent4.setAction(INTENT_ACTION4);
-            PendingIntent pendingIntent4 = PendingIntent.getBroadcast(this, 4, intent4, PendingIntent.FLAG_UPDATE_CURRENT);
-            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 4000, 4F, pendingIntent4);
+            if (mGnssPendingIntent4 == null) {
+                Intent intent4 = new Intent();
+                intent4.setAction(INTENT_ACTION4);
+                mGnssPendingIntent4 = PendingIntent.getBroadcast(this, 4, intent4, PendingIntent.FLAG_UPDATE_CURRENT);
+            }
+            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 4000, 4F, mGnssPendingIntent4);
 
         }
     }
 
     public void requestUpdatesAPI5(View view) {
         if (PermissionUtil.checkLocationPermission(this)) {
-            Intent intent5 = new Intent();
-            intent5.setAction(INTENT_ACTION5);
             Criteria criteria5 = new Criteria();
             criteria5.setAccuracy(Criteria.ACCURACY_FINE);
             criteria5.setPowerRequirement(Criteria.POWER_HIGH);
-            PendingIntent pendingIntent5 = PendingIntent.getBroadcast(this, 5, intent5, PendingIntent.FLAG_UPDATE_CURRENT);
-            mLocationManager.requestLocationUpdates(5000, 5F, criteria5, pendingIntent5);
+            if (mGnssPendingIntent5 == null) {
+                Intent intent5 = new Intent();
+                intent5.setAction(INTENT_ACTION5);
+                mGnssPendingIntent5 = PendingIntent.getBroadcast(this, 5, intent5, PendingIntent.FLAG_UPDATE_CURRENT);
+            }
+            mLocationManager.requestLocationUpdates(5000, 5F, criteria5, mGnssPendingIntent5);
         }
     }
 
@@ -201,7 +217,12 @@ public class LocationManagerAct extends BaseActivity {
 
     public void requestUpdatesNetwork3(View view) {
         if (PermissionUtil.checkLocationPermission(this)) {
-            mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 40_000, 1F, mNetworkLocationListener3);
+            if (mNetworkPendingIntent3 == null) {
+                Intent intent3 = new Intent();
+                intent3.setAction(INTENT_ACTION3);
+                mNetworkPendingIntent3 = PendingIntent.getBroadcast(this, 3, intent3, PendingIntent.FLAG_UPDATE_CURRENT);
+            }
+            mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 40_000, 1F, mNetworkPendingIntent3);
         }
     }
 
@@ -220,7 +241,7 @@ public class LocationManagerAct extends BaseActivity {
     public void requestUpdatesFused(View view) {
         if (PermissionUtil.checkLocationPermission(this)) {
             try {
-                mLocationManager.requestLocationUpdates("fused", 1000, 1F, mFusedLocationListener);
+                mLocationManager.requestLocationUpdates(mFusedProviderName, 1000, 1F, mFusedLocationListener);
             } catch (Exception e) {
                 LogUtil.e(TAG, "requestUpdatesFused", e);
             }
@@ -230,7 +251,7 @@ public class LocationManagerAct extends BaseActivity {
     public void requestUpdatesMock(View view) {
         if (PermissionUtil.checkLocationPermission(this)) {
             try {
-                mLocationManager.requestLocationUpdates("mock", 1000, 1F, mMockLocationListener);
+                mLocationManager.requestLocationUpdates(mMockProviderName, 1000, 1F, mMockLocationListener);
             } catch (Exception e) {
                 LogUtil.e(TAG, "requestUpdatesMock", e);
             }
@@ -248,18 +269,18 @@ public class LocationManagerAct extends BaseActivity {
      ************************************************************/
     public void sendExtraCommand(View view) {
         // ACCESS_LOCATION_EXTRA_COMMANDS
-            Bundle b = new Bundle();
-            b.putBoolean(EXTRA_EPHEMERIS, true);
-            b.putBoolean(EXTRA_ALMANAC, true);
-            b.putBoolean(EXTRA_POSITION, true);
-            b.putBoolean(EXTRA_TIME, true);
-            b.putBoolean(EXTRA_IONO, true);
-            b.putBoolean(EXTRA_UTC, true);
-            b.putBoolean(EXTRA_SVDIR, true);
-            b.putBoolean(EXTRA_SVSTEER, true);
-            b.putBoolean(EXTRA_SADATA, true);
-            b.putBoolean(EXTRA_RTI, true);
-            b.putBoolean(EXTRA_CELLDB_INFO, true);
+        Bundle b = new Bundle();
+        b.putBoolean(EXTRA_EPHEMERIS, true);
+        b.putBoolean(EXTRA_ALMANAC, true);
+        b.putBoolean(EXTRA_POSITION, true);
+        b.putBoolean(EXTRA_TIME, true);
+        b.putBoolean(EXTRA_IONO, true);
+        b.putBoolean(EXTRA_UTC, true);
+        b.putBoolean(EXTRA_SVDIR, true);
+        b.putBoolean(EXTRA_SVSTEER, true);
+        b.putBoolean(EXTRA_SADATA, true);
+        b.putBoolean(EXTRA_RTI, true);
+        b.putBoolean(EXTRA_CELLDB_INFO, true);
 
         mLocationManager.sendExtraCommand(LocationManager.GPS_PROVIDER, CMD_DELETE_AIDING_DATA, b);
     }
@@ -273,9 +294,10 @@ public class LocationManagerAct extends BaseActivity {
             //Android 7.0中 GnssStatusCb.Callback部分接口无法回调，Android 7.1修复，API25用新接口
             LogUtil.i(TAG, "SDK version: " + Build.VERSION.SDK_INT);
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N) {
-                mGnssNmeaListener = new GnssNmea();
-                if (mLocationManager.addNmeaListener(mGnssNmeaListener, mHandler))
+                if (mGnssNmeaListener == null) mGnssNmeaListener = new GnssNmea();
+                if (mLocationManager.addNmeaListener(mGnssNmeaListener, mHandler)) {
                     LogUtil.d(TAG, "Gnss nmea register succeed");
+                }
             /*} else {
                 mGpsNmeaListener = new GpsNmea();
                 // removed at API 29 Android Q
@@ -323,8 +345,8 @@ public class LocationManagerAct extends BaseActivity {
 
         @Override
         public void onFirstFix(int ttffMillis) {
-            LogUtil.i(TAG, "navigation onFirstFix:", ttffMillis);
             super.onFirstFix(ttffMillis);
+            LogUtil.i(TAG, "navigation onFirstFix:", ttffMillis);
         }
 
         @Override
@@ -353,7 +375,7 @@ public class LocationManagerAct extends BaseActivity {
                 case GpsStatus.GPS_EVENT_FIRST_FIX:
                     if (PermissionUtil.checkLocationPermission(LocationManagerAct.this)) {
                         GpsStatus status = mLocationManager.getGpsStatus(null);
-                        LogUtil.d(TAG, status, "ttff:", status.getTimeToFirstFix());
+                        LogUtil.d(TAG, status, "TTFF:", status != null ? status.getTimeToFirstFix() : -1);
                     } else {
                         LogUtil.w(TAG, "no location permission");
                     }
@@ -361,7 +383,7 @@ public class LocationManagerAct extends BaseActivity {
                 case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
                     if (PermissionUtil.checkLocationPermission(LocationManagerAct.this)) {
                         GpsStatus status = mLocationManager.getGpsStatus(null);
-                        LogUtil.d(TAG, status, "maxSatellites:", status.getMaxSatellites());
+                        LogUtil.d(TAG, status, "maxSatellites:", status != null ? status.getMaxSatellites() : -1);
                     } else {
                         LogUtil.w(TAG, "no location permission");
                     }
@@ -491,9 +513,13 @@ public class LocationManagerAct extends BaseActivity {
             try {
                 Intent intent = new Intent();
                 intent.setAction(ACTION_PROXIMITY_ALERT);
-                mProximityAlertIntent = PendingIntent.getBroadcast(this, 10, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                if (mProximityAlertIntent == null) {
+                    mProximityAlertIntent = PendingIntent.getBroadcast(this, 10, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 //                mLocationManager.addProximityAlert(31.065395, 121.394601, 1000F, -1, mProximityAlertIntent);
-                mLocationManager.addProximityAlert(30, 120, 100F, -1, mProximityAlertIntent);
+                    mLocationManager.addProximityAlert(30, 120, 100F, -1, mProximityAlertIntent);
+                } else {
+                    LogUtil.e(TAG, "ProximityAlert is added");
+                }
             } catch (Exception e) {
                 LogUtil.e(TAG, "requestUpdatesMock", e);
             }
@@ -501,42 +527,63 @@ public class LocationManagerAct extends BaseActivity {
     }
 
     public void removeProximityAlert(View view) {
-        if (PermissionUtil.checkLocationPermission(this)) {
-            if (mProximityAlertIntent != null) mLocationManager.removeProximityAlert(mProximityAlertIntent);
-        }
+        removeProximityAlert();
     }
 
+    private void removeProximityAlert() {
+        if (PermissionUtil.checkLocationPermission(this)) {
+            if (mProximityAlertIntent != null) {
+                mLocationManager.removeProximityAlert(mProximityAlertIntent);
+                mProximityAlertIntent = null;
+            }
+        }
+    }
 
     /************************************************************
      ****************** Test Provider (Mock) *******************
      ************************************************************/
     public void addTestProvider(View view) {
-        String name = LocationManager.GPS_PROVIDER;
-        mLocationManager.addTestProvider(name, true, true, false, false, true, true, true, Criteria.POWER_HIGH, Criteria.ACCURACY_HIGH);
-
-        mLocationManager.setTestProviderEnabled(name, true);
+        if (mMockEnabled) {
+            Toast.makeText(this, "已添加TestProvider: " + mMockProviderName, Toast.LENGTH_SHORT).show();
+        } else {
+            mMockEnabled = true;
+            mLocationManager.addTestProvider(mMockProviderName, true, true, false, false, true, true, true, Criteria.POWER_HIGH, Criteria.ACCURACY_FINE);
+            mLocationManager.setTestProviderEnabled(mMockProviderName, true);
+        }
     }
 
     public void setTestProviderLocation(View view) {
-        String name = LocationManager.GPS_PROVIDER;
-        Location location = new Location(name);
-        location.setLatitude(31.065395);
-        location.setLongitude(121.394601);
-        location.setLatitude(30D);
-        location.setLongitude(120D);
-        location.setAccuracy(20F);
-        location.setAltitude(100D);
-        location.setBearing(181F);
-        location.setSpeed(2.5F);
-        location.setTime(System.currentTimeMillis());
-        // 时间单位一定要正确，否则会导致其他问题
-        location.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());
-        location.setExtras(null);
-        mLocationManager.setTestProviderLocation(name, location);
+        if (mMockEnabled) {
+            Location location = new Location(mMockProviderName);
+            location.setLatitude(31.065395);
+            location.setLongitude(121.394601);
+            location.setLatitude(30D);
+            location.setLongitude(120D);
+            location.setAccuracy(20F);
+            location.setAltitude(100D);
+            location.setBearing(181F);
+            location.setSpeed(2.5F);
+            location.setTime(System.currentTimeMillis());
+            // 时间单位一定要正确，否则会导致其他问题
+            location.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());
+            location.setExtras(null);
+            mLocationManager.setTestProviderLocation(mMockProviderName, location);
+        } else {
+            Toast.makeText(this, "Click addTestProvider first", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void removeTestProvider(View view) {
-        mLocationManager.removeTestProvider(LocationManager.GPS_PROVIDER);
+        removeTestProvider();
+    }
+
+    private void removeTestProvider() {
+        if (mMockEnabled) {
+            mLocationManager.removeTestProvider(mMockProviderName);
+            mMockEnabled = false;
+        } else {
+            LogUtil.d(TAG,  "No Test Provider");
+        }
     }
     // Deprecated method for test provider
     // clearTestProviderEnabled()
@@ -548,15 +595,31 @@ public class LocationManagerAct extends BaseActivity {
         mLocationManager.removeUpdates(mGnssLocationListener1);
         mLocationManager.removeUpdates(mGnssLocationListener2);
         mLocationManager.removeUpdates(mGnssLocationListener3);
-        mLocationManager.removeUpdates(mGnssLocationListener4);
-        mLocationManager.removeUpdates(mGnssLocationListener5);
+        if (mGnssPendingIntent4 != null) {
+            mLocationManager.removeUpdates(mGnssPendingIntent4);
+            mGnssPendingIntent4 = null;
+        }
+        if (mGnssPendingIntent5 != null) {
+            mLocationManager.removeUpdates(mGnssPendingIntent5);
+            mGnssPendingIntent5 = null;
+        }
+
         mLocationManager.removeUpdates(mNetworkLocationListener1);
         mLocationManager.removeUpdates(mNetworkLocationListener2);
-        mLocationManager.removeUpdates(mNetworkLocationListener3);
+        if (mNetworkPendingIntent3 != null) {
+            mLocationManager.removeUpdates(mNetworkPendingIntent3);
+            mNetworkPendingIntent3 = null;
+        }
         mLocationManager.removeUpdates(mNetworkLocationListener4);
+
         mLocationManager.removeUpdates(mPassiveLocationListener);
+
         mLocationManager.removeUpdates(mFusedLocationListener);
+
         mLocationManager.removeUpdates(mMockLocationListener);
+
+        removeProximityAlert();
+        removeTestProvider();
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N) {
             if (mGnssNmeaListener != null) {
@@ -640,35 +703,50 @@ public class LocationManagerAct extends BaseActivity {
 
         @Override
         public void onReceive(Context context, Intent intent) {
+
+            LogUtil.d(TAG, "======================  START  ====================");
             LogUtil.d(TAG, "action：", intent.getAction());
+            LogUtil.d(TAG, "extra:", BundleUtil.getContent(intent.getExtras()));
+            LogUtil.d(TAG, "====================== DIVIDER ====================");
+
             if (LocationManager.MODE_CHANGED_ACTION.equals(intent.getAction())) {
                 LogUtil.d(TAG, SUB_TAG, "location service status changed");
             } else if (LocationManager.PROVIDERS_CHANGED_ACTION.equals(intent.getAction())) {
-                String extra = "NULL";
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    extra = intent.getStringExtra(LocationManager.EXTRA_PROVIDER_NAME);
+                    String providerName = intent.getStringExtra(LocationManager.EXTRA_PROVIDER_NAME);
+                    LogUtil.d(TAG, SUB_TAG, "provider changed API 29:", providerName);
                 }
-                LogUtil.d(TAG, SUB_TAG, "provider changed", extra);
+                // Build.VERSION_CODES.R = 30
+                if (Build.VERSION.SDK_INT >= 30) {
+                    String EXTRA_PROVIDER_ENABLED = "android.location.extra.PROVIDER_ENABLED";
+                    boolean enabled = intent.getBooleanExtra(EXTRA_PROVIDER_ENABLED, false);
+                    LogUtil.d(TAG, SUB_TAG, "provider changed API 30:", enabled);
+                }
             } else if (ACTION_PROXIMITY_ALERT.equals(intent.getAction())) {
                 boolean extra = intent.getBooleanExtra(LocationManager.KEY_PROXIMITY_ENTERING, false);
                 LogUtil.d(TAG, SUB_TAG, "Proximity alert, enter in:", extra);
             } else {
-                if (INTENT_ACTION4.equals(intent.getAction())) {
-                    LogUtil.d(TAG, SUB_TAG, "intent4");
+                if (INTENT_ACTION3.equals(intent.getAction())) {
+                    LogUtil.d(TAG, SUB_TAG, "network intent3");
+                } else if (INTENT_ACTION4.equals(intent.getAction())) {
+                    LogUtil.d(TAG, SUB_TAG, "gnss intent4");
                 } else if (INTENT_ACTION5.equals(intent.getAction())) {
-                    LogUtil.d(TAG, SUB_TAG, "intent5");
+                    LogUtil.d(TAG, SUB_TAG, "gnss intent5");
                 }
                 Bundle bundle = intent.getExtras();
                 if (bundle != null) {
                     Location location = (Location) bundle.get(LocationManager.KEY_LOCATION_CHANGED);
                     boolean enabled = bundle.getBoolean(LocationManager.KEY_PROVIDER_ENABLED);
-                    String statusChanged = bundle.getString(LocationManager.KEY_STATUS_CHANGED);
-                    LogUtil.d(TAG, SUB_TAG, location, enabled, statusChanged);
+                    //String statusChanged = bundle.getString(LocationManager.KEY_STATUS_CHANGED);
+                    LogUtil.d(TAG, SUB_TAG, "location changed:", location);
+                    LogUtil.d(TAG, SUB_TAG, "provider changed:", enabled);
 
                 } else {
                     LogUtil.d(TAG, SUB_TAG, "NULL");
                 }
             }
+            LogUtil.d(TAG, "======================   END   ====================");
+            LogUtil.d(TAG, "");
         }
     }
 
@@ -698,28 +776,28 @@ public class LocationManagerAct extends BaseActivity {
             e.printStackTrace();
         }
         for (String name : allProviders) {
-            LogUtil.d(TAG, name);
+            printProviderInfo(name);
 
-            LogUtil.d(TAG, name, "enabled:", mLocationManager.isProviderEnabled(name));
-
-            LocationProvider locationProvider = mLocationManager.getProvider(name);
-            LogUtil.d(TAG, locationProvider);
-
-            if (PermissionUtil.checkLocationPermission(this)) {
-                LogUtil.d(TAG, "LastKnownLocation:", mLocationManager.getLastKnownLocation(name));
-            }
             LogUtil.d(TAG, "----------------------");
         }
         LogUtil.d(TAG, "===============================================");
 
+        // fused provider
+        printProviderInfo(mFusedProviderName);
+        LogUtil.d(TAG, "===============================================");
+
+        // mock provider
+        printProviderInfo(mMockProviderName);
+        LogUtil.d(TAG, "===============================================");
+
         List<String> enabledProviders = mLocationManager.getProviders(true);
         for (String provider: enabledProviders) {
-            LogUtil.d(TAG, "enabled provider:", provider);
+            LogUtil.d(TAG, "getProviders(true):", provider, "enabled:", mLocationManager.isProviderEnabled(provider));
         }
         LogUtil.d(TAG, "===============================================");
         List<String> allProviderList = mLocationManager.getProviders(false);
         for (String provider: allProviderList) {
-            LogUtil.d(TAG, "all provider:", provider, "enabled:", mLocationManager.isProviderEnabled(provider));
+            LogUtil.d(TAG, "getProviders(false):", provider, "enabled:", mLocationManager.isProviderEnabled(provider));
         }
         LogUtil.d(TAG, "===============================================");
 
@@ -747,31 +825,35 @@ public class LocationManagerAct extends BaseActivity {
 //        mLocationManager.getCurrentLocation();
 
         if (PermissionUtil.checkLocationPermission(this)) {
-            LogUtil.d(TAG, mLocationManager.getGpsStatus(null), "Deprecated API 24 Android N");
+            LogUtil.d(TAG,  "getGpsStatus(null):", mLocationManager.getGpsStatus(null), "Deprecated API 24 Android N");
         }
         LogUtil.d(TAG, "===============================================");
+    }
 
-        LocationProvider networkProvider = mLocationManager.getProvider(LocationManager.NETWORK_PROVIDER);
-        LogUtil.d(TAG, "getName:", networkProvider.getName());
-        LogUtil.d(TAG, "requiresNetwork:", networkProvider.requiresNetwork());
-        LogUtil.d(TAG, "requiresSatellite:", networkProvider.requiresSatellite());
-        LogUtil.d(TAG, "requiresCell:", networkProvider.requiresCell());
-        LogUtil.d(TAG, "hasMonetaryCost:", networkProvider.hasMonetaryCost());
-        LogUtil.d(TAG, "supportsAltitude:", networkProvider.supportsAltitude());
-        LogUtil.d(TAG, "supportsSpeed:", networkProvider.supportsSpeed());
-        LogUtil.d(TAG, "supportsBearing:", networkProvider.supportsBearing());
-        LogUtil.d(TAG, "getPowerRequirement:", getPowerRequirement(networkProvider.getPowerRequirement()));
-        LogUtil.d(TAG, "getAccuracy:", getAccuracy(networkProvider.getAccuracy()));
+    private void printProviderInfo(String providerName) {
+        if (!TextUtils.isEmpty(providerName)) {
+            LocationProvider provider = mLocationManager.getProvider(providerName);
+            if (provider != null) {
+                LogUtil.d(TAG, "getName:", provider.getName(), "enabled:", mLocationManager.isProviderEnabled(providerName));
+                LogUtil.d(TAG, "requiresNetwork:", provider.requiresNetwork());
+                LogUtil.d(TAG, "requiresSatellite:", provider.requiresSatellite());
+                LogUtil.d(TAG, "requiresCell:", provider.requiresCell());
+                LogUtil.d(TAG, "hasMonetaryCost:", provider.hasMonetaryCost());
+                LogUtil.d(TAG, "supportsAltitude:", provider.supportsAltitude());
+                LogUtil.d(TAG, "supportsSpeed:", provider.supportsSpeed());
+                LogUtil.d(TAG, "supportsBearing:", provider.supportsBearing());
+                LogUtil.d(TAG, "getPowerRequirement:", getPowerRequirement(provider.getPowerRequirement()));
+                LogUtil.d(TAG, "getAccuracy:", getAccuracy(provider.getAccuracy()));
 
-        LogUtil.d(TAG, "===============================================");
+                LogUtil.d(TAG, "LocationProvider:", provider);
 
-//        PendingIntent pendingIntent4 = PendingIntent.getActivity(this, 4, new Intent(LocationManagerAct.this, TesterAct.class), PendingIntent.FLAG_UPDATE_CURRENT);
-//        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 4000, 4F, pendingIntent4);
-//
-//        Criteria criteria5 = new Criteria();
-//        criteria5.setPowerRequirement(Criteria.ACCURACY_FINE);
-//        PendingIntent pendingIntent5 = PendingIntent.getActivity(this, 5, new Intent(LocationManagerAct.this, TesterAct.class), PendingIntent.FLAG_ONE_SHOT);
-//        mLocationManager.requestLocationUpdates(5000, 5F, criteria5, pendingIntent5);
+                if (PermissionUtil.checkLocationPermission(this)) {
+                    LogUtil.d(TAG, "LastKnownLocation:", mLocationManager.getLastKnownLocation(providerName));
+                }
+            } else {
+                LogUtil.w(TAG, "unknown provider:", providerName);
+            }
+        }
     }
 
     private String getPowerRequirement(int requirement) {

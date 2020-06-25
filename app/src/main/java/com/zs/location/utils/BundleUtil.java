@@ -14,10 +14,10 @@ public class BundleUtil {
         StringBuilder sb = new StringBuilder();
         Set<String> set = bundle.keySet();
         for (String key : set) {
-            sb.append(" ").append(key).append("=").append(bundle.get(key)).append(",");
+            sb.append(" ").append(key).append(" = ").append(bundle.get(key)).append(",");
         }
-        sb.replace(0, 1, "[");
-        sb.replace(sb.length()-1, sb.length(), "]");
+        sb.replace(0, 1, "[ ");
+        sb.replace(sb.length()-1, sb.length(), " ]");
         return sb.substring(0);
     }
 }
