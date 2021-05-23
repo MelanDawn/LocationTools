@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent" >
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            style="@style/BaseButton"
+            android:onClick="startAdvertising"
+            android:text="startAdvertising" />
+
+        <Button
+            style="@style/BaseButton"
+            android:onClick="stopAdvertising"
+            android:text="stopAdvertising" />
+
+        <Button
+            style="@style/BaseButton"
+            android:onClick="startAdvertisingSet"
+            android:text="startAdvertisingSet" />
+
+        <Button
+            style="@style/BaseButton"
+            android:onClick="stopAdvertisingSet"
+            android:text="stopAdvertisingSet" />
+
+        <Button
+            style="@style/BaseButton"
+            android:onClick="startScan"
+            android:text="startScan" />
+
+        <Button
+            style="@style/BaseButton"
+            android:onClick="stopScan"
+            android:text="stopScan" />
+
+        <Button
+            style="@style/BaseButton"
+            android:onClick="flushPendingScanResults"
+            android:text="flushPendingScanResults" />
+
+        <Button
+            style="@style/BaseButton"
+            android:onClick="startLeScan"
+            android:text="startLeScan Deprecated 21" />
+
+        <Button
+            style="@style/BaseButton"
+            android:onClick="stopLeScan"
+            android:text="stopLeScan Deprecated 21" />
+    </LinearLayout>
+</ScrollView>

@@ -1,4 +1,4 @@
-package com.zs.location.api;
+package com.zs.wcn.lbs;
 
 import android.annotation.TargetApi;
 import android.app.PendingIntent;
@@ -27,11 +27,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.zs.location.R;
-import com.zs.location.base.BaseActivity;
-import com.zs.location.utils.BundleUtil;
-import com.zs.location.utils.LogUtil;
-import com.zs.location.utils.PermissionUtil;
+import com.zs.wcn.R;
+import com.zs.wcn.base.BaseActivity;
+import com.zs.wcn.utils.BundleUtil;
+import com.zs.wcn.utils.LogUtil;
+import com.zs.wcn.utils.PermissionUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,7 +101,7 @@ public class LocationManagerAct extends BaseActivity {
         setContentView(R.layout.act_location_manager);
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        HandlerThread thread = new HandlerThread(TAG);
+        HandlerThread thread = new HandlerThread(mTag);
         thread.start();
         mHandler = new Handler(thread.getLooper());
     }
@@ -109,7 +109,6 @@ public class LocationManagerAct extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        printSimpleMethod();
     }
 
     @Override
@@ -137,6 +136,10 @@ public class LocationManagerAct extends BaseActivity {
         removeAll();
     }
 
+    public void printSimpleMethod(View v) {
+        printSimpleMethod();
+    }
+
     public void removeAll(View view) {
         removeAll();
     }
@@ -153,10 +156,10 @@ public class LocationManagerAct extends BaseActivity {
 //            @Override
 //            public void run() {
 //                if (PermissionUtil.checkLocationPermission(LocationManagerAct.this)) {
-//                    LogUtil.d(TAG, "looper:", Looper.myLooper());
+//                    LogUtil.d(mTag, "looper:", Looper.myLooper());
 //                    mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0F, mGnssLocationListener1);
 //                } else {
-//                    LogUtil.w(TAG, "no location permission");
+//                    LogUtil.w(mTag, "no location permission");
 //                }
 //            }
 //        }).start();
@@ -243,7 +246,7 @@ public class LocationManagerAct extends BaseActivity {
             try {
                 mLocationManager.requestLocationUpdates(mFusedProviderName, 1000, 1F, mFusedLocationListener);
             } catch (Exception e) {
-                LogUtil.e(TAG, "requestUpdatesFused", e);
+                LogUtil.e(mTag, "requestUpdatesFused", e);
             }
         }
     }
@@ -253,7 +256,7 @@ public class LocationManagerAct extends BaseActivity {
             try {
                 mLocationManager.requestLocationUpdates(mMockProviderName, 1000, 1F, mMockLocationListener);
             } catch (Exception e) {
-                LogUtil.e(TAG, "requestUpdatesMock", e);
+                LogUtil.e(mTag, "requestUpdatesMock", e);
             }
         }
     }
@@ -292,17 +295,17 @@ public class LocationManagerAct extends BaseActivity {
     public void addNmeaListener(View view) {
         if (PermissionUtil.checkLocationPermission(this)) {
             //Android 7.0中 GnssStatusCb.Callback部分接口无法回调，Android 7.1修复，API25用新接口
-            LogUtil.i(TAG, "SDK version: " + Build.VERSION.SDK_INT);
+            LogUtil.i(mTag, "SDK version: " + Build.VERSION.SDK_INT);
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N) {
                 if (mGnssNmeaListener == null) mGnssNmeaListener = new GnssNmea();
                 if (mLocationManager.addNmeaListener(mGnssNmeaListener, mHandler)) {
-                    LogUtil.d(TAG, "Gnss nmea register succeed");
+                    LogUtil.d(mTag, "Gnss nmea register succeed");
                 }
             /*} else {
                 mGpsNmeaListener = new GpsNmea();
                 // removed at API 29 Android Q
                 if (mLocationManager.addNmeaListener(mGpsNmeaListener))
-                    LogUtil.d(TAG, "Gps nmea register succeed");*/
+                    LogUtil.d(mmTag, "Gps nmea register succeed");*/
             }
         }
     }
@@ -311,14 +314,14 @@ public class LocationManagerAct extends BaseActivity {
     private class GnssNmea implements OnNmeaMessageListener {
         @Override
         public void onNmeaMessage(String s, long l) {
-            LogUtil.d(TAG, l, ":", s);
+            LogUtil.d(mTag, l, ":", s);
         }
     }
 
     private class GpsNmea implements GpsStatus.NmeaListener {
         @Override
         public void onNmeaReceived(long l, String s) {
-            LogUtil.d(TAG, l, ":", s);
+            LogUtil.d(mTag, l, ":", s);
         }
     }
 
@@ -328,15 +331,15 @@ public class LocationManagerAct extends BaseActivity {
     public void registerGnssStatusCallback(View view) {
         if (PermissionUtil.checkLocationPermission(this)) {
             //Android 7.0中 GnssStatusCb.Callback部分接口无法回调，Android 7.1修复，API25用新接口
-            LogUtil.i(TAG, "SDK version: " + Build.VERSION.SDK_INT);
+            LogUtil.i(mTag, "SDK version: " + Build.VERSION.SDK_INT);
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N) {
                 mGnssStatusListener = new GnssStatusCb();
                 if (mLocationManager.registerGnssStatusCallback(mGnssStatusListener, mHandler))
-                    LogUtil.d(TAG, "Gnss status register succeed");
+                    LogUtil.d(mTag, "Gnss status register succeed");
             } else {
                 mGpsStatusListener = new GpsStatusCb();
                 if (mLocationManager.addGpsStatusListener(mGpsStatusListener))
-                    LogUtil.d(TAG, "Gps info register succeed");
+                    LogUtil.d(mTag, "Gps info register succeed");
             }
         }
     }
@@ -346,25 +349,25 @@ public class LocationManagerAct extends BaseActivity {
         @Override
         public void onFirstFix(int ttffMillis) {
             super.onFirstFix(ttffMillis);
-            LogUtil.i(TAG, "navigation onFirstFix:", ttffMillis);
+            LogUtil.i(mTag, "navigation onFirstFix:", ttffMillis);
         }
 
         @Override
         public void onSatelliteStatusChanged(GnssStatus status) {
             super.onSatelliteStatusChanged(status);
-            LogUtil.i(TAG, "navigation onSatelliteStatusChanged:", status);
+            LogUtil.i(mTag, "navigation onSatelliteStatusChanged:", status);
         }
 
         @Override
         public void onStarted() {
             super.onStarted();
-            LogUtil.i(TAG, "navigation onStarted");
+            LogUtil.i(mTag, "navigation onStarted");
         }
 
         @Override
         public void onStopped() {
             super.onStopped();
-            LogUtil.i(TAG, "navigation onStopped");
+            LogUtil.i(mTag, "navigation onStopped");
         }
     }
 
@@ -375,24 +378,24 @@ public class LocationManagerAct extends BaseActivity {
                 case GpsStatus.GPS_EVENT_FIRST_FIX:
                     if (PermissionUtil.checkLocationPermission(LocationManagerAct.this)) {
                         GpsStatus status = mLocationManager.getGpsStatus(null);
-                        LogUtil.d(TAG, status, "TTFF:", status != null ? status.getTimeToFirstFix() : -1);
+                        LogUtil.d(mTag, status, "TTFF:", status != null ? status.getTimeToFirstFix() : -1);
                     } else {
-                        LogUtil.w(TAG, "no location permission");
+                        LogUtil.w(mTag, "no location permission");
                     }
                     break;
                 case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
                     if (PermissionUtil.checkLocationPermission(LocationManagerAct.this)) {
                         GpsStatus status = mLocationManager.getGpsStatus(null);
-                        LogUtil.d(TAG, status, "maxSatellites:", status != null ? status.getMaxSatellites() : -1);
+                        LogUtil.d(mTag, status, "maxSatellites:", status != null ? status.getMaxSatellites() : -1);
                     } else {
-                        LogUtil.w(TAG, "no location permission");
+                        LogUtil.w(mTag, "no location permission");
                     }
                     break;
                 case GpsStatus.GPS_EVENT_STARTED:
-                    Log.i(TAG, "定位启动");
+                    Log.i(mTag, "定位启动");
                     break;
                 case GpsStatus.GPS_EVENT_STOPPED:
-                    Log.i(TAG, "定位结束");
+                    Log.i(mTag, "定位结束");
                     break;
             }
         }
@@ -404,11 +407,11 @@ public class LocationManagerAct extends BaseActivity {
     public void registerGnssNavigationMessageCallback(View view) {
         if (PermissionUtil.checkLocationPermission(this)) {
             //Android 7.0中 GnssStatusCb.Callback部分接口无法回调，Android 7.1修复，API25用新接口
-            LogUtil.i(TAG, "SDK version: " + Build.VERSION.SDK_INT);
+            LogUtil.i(mTag, "SDK version: " + Build.VERSION.SDK_INT);
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N) {
                 mGnssNavigationMessageCb = new GnssNavigationMessageCb();
                 if (mLocationManager.registerGnssNavigationMessageCallback(mGnssNavigationMessageCb, mHandler)) {
-                    LogUtil.d(TAG, "Gnss navigation message register succeed");
+                    LogUtil.d(mTag, "Gnss navigation message register succeed");
                 }
             }
         }
@@ -419,19 +422,19 @@ public class LocationManagerAct extends BaseActivity {
         @Override
         public void onGnssNavigationMessageReceived(GnssNavigationMessage event) {
             super.onGnssNavigationMessageReceived(event);
-            LogUtil.d(TAG, "GnssNavigationMessageCb", "GnssNavigationMessage:", event.toString());
-            LogUtil.d(TAG, "GnssNavigationMessageCb", "getMessageId:", event.getMessageId());
-            LogUtil.d(TAG, "GnssNavigationMessageCb", "getSubmessageId:", event.getSubmessageId());
-            LogUtil.d(TAG, "GnssNavigationMessageCb", "getStatus:", event.getStatus());
-            LogUtil.d(TAG, "GnssNavigationMessageCb", "getSvid:", event.getSvid());
-            LogUtil.d(TAG, "GnssNavigationMessageCb", "getType:", event.getType());
-            LogUtil.d(TAG, "GnssNavigationMessageCb", "getData:", event.getData());
+            LogUtil.d(mTag, "GnssNavigationMessageCb", "GnssNavigationMessage:", event.toString());
+            LogUtil.d(mTag, "GnssNavigationMessageCb", "getMessageId:", event.getMessageId());
+            LogUtil.d(mTag, "GnssNavigationMessageCb", "getSubmessageId:", event.getSubmessageId());
+            LogUtil.d(mTag, "GnssNavigationMessageCb", "getStatus:", event.getStatus());
+            LogUtil.d(mTag, "GnssNavigationMessageCb", "getSvid:", event.getSvid());
+            LogUtil.d(mTag, "GnssNavigationMessageCb", "getType:", event.getType());
+            LogUtil.d(mTag, "GnssNavigationMessageCb", "getData:", event.getData());
         }
 
         @Override
         public void onStatusChanged(int status) {
             super.onStatusChanged(status);
-            LogUtil.d(TAG, "GnssNavigationMessageCb", "status:", statusToString(status));
+            LogUtil.d(mTag, "GnssNavigationMessageCb", "status:", statusToString(status));
         }
 
         private String statusToString(int status) {
@@ -458,11 +461,11 @@ public class LocationManagerAct extends BaseActivity {
     public void registerGnssMeasurementsCallback(View view) {
         if (PermissionUtil.checkLocationPermission(this)) {
             //Android 7.0中 GnssStatusCb.Callback部分接口无法回调，Android 7.1修复，API25用新接口
-            LogUtil.i(TAG, "SDK version: " + Build.VERSION.SDK_INT);
+            LogUtil.i(mTag, "SDK version: " + Build.VERSION.SDK_INT);
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N) {
                 mGnssMeasurementsEventCb = new GnssMeasurementEventCb();
                 if (mLocationManager.registerGnssMeasurementsCallback(mGnssMeasurementsEventCb, mHandler)) {
-                    LogUtil.d(TAG, "Gnss measurement event register succeed");
+                    LogUtil.d(mTag, "Gnss measurement event register succeed");
                 }
             }
         }
@@ -473,16 +476,16 @@ public class LocationManagerAct extends BaseActivity {
         @Override
         public void onGnssMeasurementsReceived(GnssMeasurementsEvent eventArgs) {
             super.onGnssMeasurementsReceived(eventArgs);
-            LogUtil.d(TAG, "GnssMeasurementEventCb", "GnssMeasurementsEvent:", eventArgs.toString());
-            LogUtil.d(TAG, "GnssMeasurementEventCb", "GnssClock:", eventArgs.getClock());
-            LogUtil.d(TAG, "GnssMeasurementEventCb", "GnssMeasurement list:", eventArgs.getMeasurements());
+            LogUtil.d(mTag, "GnssMeasurementEventCb", "GnssMeasurementsEvent:", eventArgs.toString());
+            LogUtil.d(mTag, "GnssMeasurementEventCb", "GnssClock:", eventArgs.getClock());
+            LogUtil.d(mTag, "GnssMeasurementEventCb", "GnssMeasurement list:", eventArgs.getMeasurements());
         }
 
 
         @Override
         public void onStatusChanged(int status) {
             super.onStatusChanged(status);
-            LogUtil.d(TAG, "GnssMeasurementEventCb", "status:", statusToString(status));
+            LogUtil.d(mTag, "GnssMeasurementEventCb", "status:", statusToString(status));
         }
 
         private String statusToString(int status) {
@@ -518,10 +521,10 @@ public class LocationManagerAct extends BaseActivity {
 //                mLocationManager.addProximityAlert(31.065395, 121.394601, 1000F, -1, mProximityAlertIntent);
                     mLocationManager.addProximityAlert(30, 120, 100F, -1, mProximityAlertIntent);
                 } else {
-                    LogUtil.e(TAG, "ProximityAlert is added");
+                    LogUtil.e(mTag, "ProximityAlert is added");
                 }
             } catch (Exception e) {
-                LogUtil.e(TAG, "requestUpdatesMock", e);
+                LogUtil.e(mTag, "requestUpdatesMock", e);
             }
         }
     }
@@ -582,7 +585,7 @@ public class LocationManagerAct extends BaseActivity {
             mLocationManager.removeTestProvider(mMockProviderName);
             mMockEnabled = false;
         } else {
-            LogUtil.d(TAG,  "No Test Provider");
+            LogUtil.d(mTag,  "No Test Provider");
         }
     }
     // Deprecated method for test provider
@@ -661,14 +664,14 @@ public class LocationManagerAct extends BaseActivity {
 
         @Override
         public void onLocationChanged(final Location location) {
-            LogUtil.d(TAG, mName, "onLocationChanged", location);
+            LogUtil.d(mTag, mName, "onLocationChanged", location);
             if (LocationManager.NETWORK_PROVIDER.equals(location.getProvider())) {
                 Bundle bundle = location.getExtras();
-                LogUtil.d(TAG, "location extra:", BundleUtil.getContent(bundle));
+                LogUtil.d(mTag, "location extra:", BundleUtil.getContent(bundle));
                 if (bundle != null) {
                     Address address = (Address) bundle.get("address");
                     if (address != null) {
-                        LogUtil.d(TAG, "address extra:", BundleUtil.getContent(bundle));
+                        LogUtil.d(mTag, "address extra:", BundleUtil.getContent(bundle));
                     }
                 }
             }
@@ -676,22 +679,22 @@ public class LocationManagerAct extends BaseActivity {
 
         @Override
         public void onProviderDisabled(String s) {
-            LogUtil.d(TAG, mName, "onProviderDisabled:", s);
+            LogUtil.d(mTag, mName, "onProviderDisabled:", s);
         }
 
         @Override
         public void onProviderEnabled(String s) {
-            LogUtil.d(TAG, mName, "onProviderEnabled:", s);
+            LogUtil.d(mTag, mName, "onProviderEnabled:", s);
         }
 
         @Override
         public void onStatusChanged(String s, int i, Bundle bundle) {
-            LogUtil.d(TAG, mName, "onStatusChanged:", s, "status:", i);
+            LogUtil.d(mTag, mName, "onStatusChanged:", s, "status:", i);
             if (bundle != null) {
                 Set<String> set = bundle.keySet();
                 for (String key : set) {
                     Object value = bundle.get(key);
-                    LogUtil.d(TAG, mName, key, value == null ? "NULL" : value.toString());
+                    LogUtil.d(mTag, mName, key, value == null ? "NULL" : value.toString());
                 }
             }
         }
@@ -699,54 +702,54 @@ public class LocationManagerAct extends BaseActivity {
 
     private class MyBroadcastReceiver extends BroadcastReceiver {
 
-        private static final String SUB_TAG = "MyBroadcastReceiver";
+        private static final String SUB_mTag = "MyBroadcastReceiver";
 
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            LogUtil.d(TAG, "======================  START  ====================");
-            LogUtil.d(TAG, "action：", intent.getAction());
-            LogUtil.d(TAG, "extra:", BundleUtil.getContent(intent.getExtras()));
-            LogUtil.d(TAG, "====================== DIVIDER ====================");
+            LogUtil.d(mTag, "======================  START  ====================");
+            LogUtil.d(mTag, "action：", intent.getAction());
+            LogUtil.d(mTag, "extra:", BundleUtil.getContent(intent.getExtras()));
+            LogUtil.d(mTag, "====================== DIVIDER ====================");
 
             if (LocationManager.MODE_CHANGED_ACTION.equals(intent.getAction())) {
-                LogUtil.d(TAG, SUB_TAG, "location service status changed");
+                LogUtil.d(mTag, SUB_mTag, "location service status changed");
             } else if (LocationManager.PROVIDERS_CHANGED_ACTION.equals(intent.getAction())) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     String providerName = intent.getStringExtra(LocationManager.EXTRA_PROVIDER_NAME);
-                    LogUtil.d(TAG, SUB_TAG, "provider changed API 29:", providerName);
+                    LogUtil.d(mTag, SUB_mTag, "provider changed API 29:", providerName);
                 }
                 // Build.VERSION_CODES.R = 30
                 if (Build.VERSION.SDK_INT >= 30) {
                     String EXTRA_PROVIDER_ENABLED = "android.location.extra.PROVIDER_ENABLED";
                     boolean enabled = intent.getBooleanExtra(EXTRA_PROVIDER_ENABLED, false);
-                    LogUtil.d(TAG, SUB_TAG, "provider changed API 30:", enabled);
+                    LogUtil.d(mTag, SUB_mTag, "provider changed API 30:", enabled);
                 }
             } else if (ACTION_PROXIMITY_ALERT.equals(intent.getAction())) {
                 boolean extra = intent.getBooleanExtra(LocationManager.KEY_PROXIMITY_ENTERING, false);
-                LogUtil.d(TAG, SUB_TAG, "Proximity alert, enter in:", extra);
+                LogUtil.d(mTag, SUB_mTag, "Proximity alert, enter in:", extra);
             } else {
                 if (INTENT_ACTION3.equals(intent.getAction())) {
-                    LogUtil.d(TAG, SUB_TAG, "network intent3");
+                    LogUtil.d(mTag, SUB_mTag, "network intent3");
                 } else if (INTENT_ACTION4.equals(intent.getAction())) {
-                    LogUtil.d(TAG, SUB_TAG, "gnss intent4");
+                    LogUtil.d(mTag, SUB_mTag, "gnss intent4");
                 } else if (INTENT_ACTION5.equals(intent.getAction())) {
-                    LogUtil.d(TAG, SUB_TAG, "gnss intent5");
+                    LogUtil.d(mTag, SUB_mTag, "gnss intent5");
                 }
                 Bundle bundle = intent.getExtras();
                 if (bundle != null) {
                     Location location = (Location) bundle.get(LocationManager.KEY_LOCATION_CHANGED);
                     boolean enabled = bundle.getBoolean(LocationManager.KEY_PROVIDER_ENABLED);
                     //String statusChanged = bundle.getString(LocationManager.KEY_STATUS_CHANGED);
-                    LogUtil.d(TAG, SUB_TAG, "location changed:", location);
-                    LogUtil.d(TAG, SUB_TAG, "provider changed:", enabled);
+                    LogUtil.d(mTag, SUB_mTag, "location changed:", location);
+                    LogUtil.d(mTag, SUB_mTag, "provider changed:", enabled);
 
                 } else {
-                    LogUtil.d(TAG, SUB_TAG, "NULL");
+                    LogUtil.d(mTag, SUB_mTag, "NULL");
                 }
             }
-            LogUtil.d(TAG, "======================   END   ====================");
-            LogUtil.d(TAG, "");
+            LogUtil.d(mTag, "======================   END   ====================");
+            LogUtil.d(mTag, "");
         }
     }
 
@@ -754,20 +757,20 @@ public class LocationManagerAct extends BaseActivity {
      ****************** Simple Method *******************
      ************************************************************/
     private void printSimpleMethod() {
-        LogUtil.e(TAG, "method start with IS");
-        LogUtil.d(TAG, LocationManager.GPS_PROVIDER, "enabled:", mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER));
+        LogUtil.e(mTag, "method start with IS");
+        LogUtil.d(mTag, LocationManager.GPS_PROVIDER, "enabled:", mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            LogUtil.d(TAG, "Location Service enabled:", mLocationManager.isLocationEnabled(), "ADD API 28 Android P");
+            LogUtil.d(mTag, "Location Service enabled:", mLocationManager.isLocationEnabled(), "ADD API 28 Android P");
         }
-        LogUtil.d(TAG, "===============================================");
+        LogUtil.d(mTag, "===============================================");
 
-        LogUtil.e(TAG, "method start with GET");
+        LogUtil.e(mTag, "method start with GET");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            LogUtil.d(TAG, "GnssHardwareModelName:", mLocationManager.getGnssHardwareModelName(), "ADD API 28 Android P");
-            LogUtil.d(TAG, "GnssYearOfHardware:", mLocationManager.getGnssYearOfHardware(), "ADD API 28 Android P");
+            LogUtil.d(mTag, "GnssHardwareModelName:", mLocationManager.getGnssHardwareModelName(), "ADD API 28 Android P");
+            LogUtil.d(mTag, "GnssYearOfHardware:", mLocationManager.getGnssYearOfHardware(), "ADD API 28 Android P");
 
         }
-        LogUtil.d(TAG, "===============================================");
+        LogUtil.d(mTag, "===============================================");
 
         List<String> allProviders = new ArrayList<>();
         try {
@@ -778,80 +781,80 @@ public class LocationManagerAct extends BaseActivity {
         for (String name : allProviders) {
             printProviderInfo(name);
 
-            LogUtil.d(TAG, "----------------------");
+            LogUtil.d(mTag, "----------------------");
         }
-        LogUtil.d(TAG, "===============================================");
+        LogUtil.d(mTag, "===============================================");
 
         // fused provider
         printProviderInfo(mFusedProviderName);
-        LogUtil.d(TAG, "===============================================");
+        LogUtil.d(mTag, "===============================================");
 
         // mock provider
         printProviderInfo(mMockProviderName);
-        LogUtil.d(TAG, "===============================================");
+        LogUtil.d(mTag, "===============================================");
 
         List<String> enabledProviders = mLocationManager.getProviders(true);
         for (String provider: enabledProviders) {
-            LogUtil.d(TAG, "getProviders(true):", provider, "enabled:", mLocationManager.isProviderEnabled(provider));
+            LogUtil.d(mTag, "getProviders(true):", provider, "enabled:", mLocationManager.isProviderEnabled(provider));
         }
-        LogUtil.d(TAG, "===============================================");
+        LogUtil.d(mTag, "===============================================");
         List<String> allProviderList = mLocationManager.getProviders(false);
         for (String provider: allProviderList) {
-            LogUtil.d(TAG, "getProviders(false):", provider, "enabled:", mLocationManager.isProviderEnabled(provider));
+            LogUtil.d(mTag, "getProviders(false):", provider, "enabled:", mLocationManager.isProviderEnabled(provider));
         }
-        LogUtil.d(TAG, "===============================================");
+        LogUtil.d(mTag, "===============================================");
 
         Criteria criteria3 = new Criteria();
         criteria3.setPowerRequirement(Criteria.POWER_LOW);
         List<String> providers = mLocationManager.getProviders(criteria3, false);
         for (String name : providers) {
-            LogUtil.d(TAG, "power low provider:", name, "enabled:", mLocationManager.isProviderEnabled(name));
+            LogUtil.d(mTag, "power low provider:", name, "enabled:", mLocationManager.isProviderEnabled(name));
         }
-        LogUtil.d(TAG, "===============================================");
+        LogUtil.d(mTag, "===============================================");
 
         Criteria criteria1 = new Criteria();
         criteria1.setAltitudeRequired(true);
         String criteriaProvider1 = mLocationManager.getBestProvider(criteria1, true);
-        LogUtil.d(TAG, criteria1, criteriaProvider1);
+        LogUtil.d(mTag, criteria1, criteriaProvider1);
 
         Criteria criteria2 = new Criteria();
         criteria2.setPowerRequirement(Criteria.POWER_LOW);
         String criteriaProvider2 = mLocationManager.getBestProvider(criteria2, true);
-        LogUtil.d(TAG, criteria2, criteriaProvider2);
+        LogUtil.d(mTag, criteria2, criteriaProvider2);
 
-        LogUtil.d(TAG, "===============================================");
+        LogUtil.d(mTag, "===============================================");
 
 //        mLocationManager.getGnssCapabilities();
 //        mLocationManager.getCurrentLocation();
 
         if (PermissionUtil.checkLocationPermission(this)) {
-            LogUtil.d(TAG,  "getGpsStatus(null):", mLocationManager.getGpsStatus(null), "Deprecated API 24 Android N");
+            LogUtil.d(mTag,  "getGpsStatus(null):", mLocationManager.getGpsStatus(null), "Deprecated API 24 Android N");
         }
-        LogUtil.d(TAG, "===============================================");
+        LogUtil.d(mTag, "===============================================");
     }
 
     private void printProviderInfo(String providerName) {
         if (!TextUtils.isEmpty(providerName)) {
             LocationProvider provider = mLocationManager.getProvider(providerName);
             if (provider != null) {
-                LogUtil.d(TAG, "getName:", provider.getName(), "enabled:", mLocationManager.isProviderEnabled(providerName));
-                LogUtil.d(TAG, "requiresNetwork:", provider.requiresNetwork());
-                LogUtil.d(TAG, "requiresSatellite:", provider.requiresSatellite());
-                LogUtil.d(TAG, "requiresCell:", provider.requiresCell());
-                LogUtil.d(TAG, "hasMonetaryCost:", provider.hasMonetaryCost());
-                LogUtil.d(TAG, "supportsAltitude:", provider.supportsAltitude());
-                LogUtil.d(TAG, "supportsSpeed:", provider.supportsSpeed());
-                LogUtil.d(TAG, "supportsBearing:", provider.supportsBearing());
-                LogUtil.d(TAG, "getPowerRequirement:", getPowerRequirement(provider.getPowerRequirement()));
-                LogUtil.d(TAG, "getAccuracy:", getAccuracy(provider.getAccuracy()));
+                LogUtil.d(mTag, "getName:", provider.getName(), "enabled:", mLocationManager.isProviderEnabled(providerName));
+                LogUtil.d(mTag, "requiresNetwork:", provider.requiresNetwork());
+                LogUtil.d(mTag, "requiresSatellite:", provider.requiresSatellite());
+                LogUtil.d(mTag, "requiresCell:", provider.requiresCell());
+                LogUtil.d(mTag, "hasMonetaryCost:", provider.hasMonetaryCost());
+                LogUtil.d(mTag, "supportsAltitude:", provider.supportsAltitude());
+                LogUtil.d(mTag, "supportsSpeed:", provider.supportsSpeed());
+                LogUtil.d(mTag, "supportsBearing:", provider.supportsBearing());
+                LogUtil.d(mTag, "getPowerRequirement:", getPowerRequirement(provider.getPowerRequirement()));
+                LogUtil.d(mTag, "getAccuracy:", getAccuracy(provider.getAccuracy()));
 
-                LogUtil.d(TAG, "LocationProvider:", provider);
+                LogUtil.d(mTag, "LocationProvider:", provider);
 
                 if (PermissionUtil.checkLocationPermission(this)) {
-                    LogUtil.d(TAG, "LastKnownLocation:", mLocationManager.getLastKnownLocation(providerName));
+                    LogUtil.d(mTag, "LastKnownLocation:", mLocationManager.getLastKnownLocation(providerName));
                 }
             } else {
-                LogUtil.w(TAG, "unknown provider:", providerName);
+                LogUtil.w(mTag, "unknown provider:", providerName);
             }
         }
     }

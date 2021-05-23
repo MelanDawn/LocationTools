@@ -8,6 +8,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <Button
+            style="@style/BaseButton"
+            android:onClick="printSimpleMethod"
+            android:text="@string/lm_print_simple_method" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="2dp"

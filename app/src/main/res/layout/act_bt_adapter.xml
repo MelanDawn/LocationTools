@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent" >
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            style="@style/BaseButton"
+            android:onClick="printSimpleMethod"
+            android:text="printSimpleMethod" />
+
+        <Button
+            style="@style/BaseButton"
+            android:onClick="getBoundedDevices"
+            android:text="getBoundedDevices" />
+
+        <Button
+            style="@style/BaseButton"
+            android:onClick="enable"
+            android:text="enable" />
+
+        <Button
+            style="@style/BaseButton"
+            android:onClick="enableByBroadcast"
+            android:text="enableByBroadcast" />
+
+        <Button
+            style="@style/BaseButton"
+            android:onClick="disable"
+            android:text="disable" />
+
+        <Button
+            style="@style/BaseButton"
+            android:onClick="startDiscovery"
+            android:text="startDiscovery" />
+
+        <Button
+            style="@style/BaseButton"
+            android:onClick="cancelDiscovery"
+            android:text="cancelDiscovery" />
+
+        <Button
+            style="@style/BaseButton"
+            android:onClick="setDiscoverable"
+            android:text="setDiscoverable" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal">
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_weight="1"/>
+            <Button
+                style="@style/BaseButton"
+                android:layout_weight="1"
+                android:onClick="setName"
+                android:text="setName" />
+        </LinearLayout>
+
+
+        <Button
+            style="@style/BaseButton"
+            android:onClick="getProfileProxy"
+            android:text="getProfileProxy" />
+
+        <Button
+            style="@style/BaseButton"
+            android:onClick="closeProfileProxy"
+            android:text="closeProfileProxy" />
+
+        <Button
+            style="@style/BaseButton"
+            android:onClick="listenUsingL2capChannel"
+            android:text="listenUsingL2capChannel" />
+
+        <Button
+            style="@style/BaseButton"
+            android:onClick="listenUsingInsecureL2capChannel"
+            android:text="listenUsingInsecureL2capChannel" />
+
+        <Button
+            style="@style/BaseButton"
+            android:onClick="listenUsingInsecureRfcommWithServiceRecord"
+            android:text="listenUsingInsecureRfcommWithServiceRecord" />
+
+        <Button
+            style="@style/BaseButton"
+            android:onClick="listenUsingRfcommWithServiceRecord"
+            android:text="listenUsingRfcommWithServiceRecord" />
+
+    </LinearLayout>
+</ScrollView>

@@ -1,4 +1,4 @@
-package com.zs.location.api;
+package com.zs.wcn.lbs;
 
 import android.location.Address;
 import android.location.Geocoder;
@@ -8,10 +8,11 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.zs.location.R;
-import com.zs.location.base.BaseActivity;
-import com.zs.location.utils.AddressUtil;
-import com.zs.location.utils.LogUtil;
+
+import com.zs.wcn.R;
+import com.zs.wcn.base.BaseActivity;
+import com.zs.wcn.utils.AddressUtil;
+import com.zs.wcn.utils.LogUtil;
 
 import java.io.IOException;
 import java.util.List;
@@ -42,7 +43,7 @@ public class GeocodeAct extends BaseActivity {
         String locationName = mLocationNameEt.getText().toString().trim();
         if (TextUtils.isEmpty(locationName)) {
             Toast.makeText(this, "请输入地点名称", Toast.LENGTH_SHORT).show();
-            LogUtil.i(TAG, "invalid locationName:", locationName);
+            LogUtil.i(mTag, "invalid locationName:", locationName);
             return;
         }
         printGetFromLocationName(locationName);
@@ -54,7 +55,7 @@ public class GeocodeAct extends BaseActivity {
         String lngStr = mLngEt.getText().toString().trim();
         if (TextUtils.isEmpty(latStr) || TextUtils.isEmpty(lngStr)) {
             Toast.makeText(this, "请输入经纬度", Toast.LENGTH_SHORT).show();
-            LogUtil.i(TAG, "invalid lat:", latStr, "or lng:", lngStr);
+            LogUtil.i(mTag, "invalid lat:", latStr, "or lng:", lngStr);
             return;
         }
 
@@ -85,13 +86,13 @@ public class GeocodeAct extends BaseActivity {
                     //List<Address> list = geocoder.getFromLocationName(locationName, 5, 10, 100, 50, 160);
                     if (list != null && !list.isEmpty()) {
                         for (int i = 0; i < list.size(); i++) {
-                            LogUtil.d(TAG, "address", i, ":", AddressUtil.getContent(list.get(i)));
+                            LogUtil.d(mTag, "address", i, ":", AddressUtil.getContent(list.get(i)));
                         }
                     } else {
-                        LogUtil.w(TAG, "printGetFromLocationName result is empty:", list);
+                        LogUtil.w(mTag, "printGetFromLocationName result is empty:", list);
                     }
                 } catch (IOException e) {
-                    LogUtil.e(TAG, "printGetFromLocationName", e);
+                    LogUtil.e(mTag, "printGetFromLocationName", e);
                     e.printStackTrace();
                 }
             }
@@ -108,13 +109,13 @@ public class GeocodeAct extends BaseActivity {
                     List<Address> list = geocoder.getFromLocation(lat, lng, 5);
                     if (list != null && !list.isEmpty()) {
                         for (int i = 0; i < list.size(); i++) {
-                            LogUtil.d(TAG, "address", i, ":", AddressUtil.getContent(list.get(i)));
+                            LogUtil.d(mTag, "address", i, ":", AddressUtil.getContent(list.get(i)));
                         }
                     } else {
-                        LogUtil.w(TAG, "printGetFromLocation result is empty:", list);
+                        LogUtil.w(mTag, "printGetFromLocation result is empty:", list);
                     }
                 } catch (IOException e) {
-                    LogUtil.e(TAG, "printGetFromLocation", e);
+                    LogUtil.e(mTag, "printGetFromLocation", e);
                     e.printStackTrace();
                 }
             }
@@ -123,6 +124,6 @@ public class GeocodeAct extends BaseActivity {
 
     private void printSimpleMethod() {
         // 判断 Geocoder 服务是否可用，接口实现与否、网络状态
-        LogUtil.i(TAG, "Geocoder available:", Geocoder.isPresent());
+        LogUtil.i(mTag, "Geocoder available:", Geocoder.isPresent());
     }
 }

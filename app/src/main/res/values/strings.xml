@@ -1,8 +1,17 @@
 <resources>
-    <string name="app_name">LocationTools</string>
-    <string name="main_to_lm_tester">to LocationManager</string>
-    <string name="main_to_geocode">to Geocoder</string>
+    <string name="app_name">WcnTools</string>
 
+    <!-- Main activity -->
+    <string name="main_tab_wifi">WiFi</string>
+    <string name="main_tab_bt">BT</string>
+    <string name="main_tab_lbs">LBS</string>
+    <string name="main_tab_nfc">NFC</string>
+    <string name="main_tab_uwb">UWB</string>
+
+    <string name="main_to_lm">LocationManager</string>
+    <string name="main_to_geocode">Geocoder</string>
+
+    <string name="lm_print_simple_method">printSimpleMethod</string>
     <string name="lm_remove_all">Remove All Request</string>
     <string name="lm_request_updates_gnss_1">Request Location GNSS1 1s</string>
     <string name="lm_request_updates_gnss_2">Request Location GNSS2 2s</string>

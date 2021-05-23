@@ -1,4 +1,4 @@
-package com.zs.location.utils;
+package com.zs.wcn.utils;
 
 import android.os.Bundle;
 

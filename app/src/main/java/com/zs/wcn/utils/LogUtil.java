@@ -1,10 +1,10 @@
-package com.zs.location.utils;
+package com.zs.wcn.utils;
 
 import android.util.Log;
 
 public class LogUtil {
 
-    private static final String TAG = "LocationTools";
+    private static final String TAG = "WcnTools";
 
     public static boolean V = true;
     public static boolean D = true;
@@ -13,26 +13,26 @@ public class LogUtil {
     public static boolean E = true;
 
     public static void v(String tag, Object... msg){
-        if (V) Log.v(tag, formatLog(msg));
+        if (V) Log.v(TAG, formatLog(tag, msg));
     }
     public static void d(String tag, Object... msg){
-        if (D) Log.d(tag, formatLog(msg));
+        if (D) Log.d(TAG, formatLog(tag, msg));
     }
     public static void i(String tag, Object... msg){
-        if (I) Log.i(tag, formatLog(msg));
+        if (I) Log.i(TAG, formatLog(tag, msg));
     }
     public static void w(String tag, Object... msg){
-        if (W) Log.w(tag, formatLog(msg));
+        if (W) Log.w(TAG, formatLog(tag, msg));
     }
     public static void e(String tag, Object... msg){
-        if (E) Log.e(tag, formatLog(msg));
+        if (E) Log.e(TAG, formatLog(tag, msg));
     }
 
-    private static String formatLog(Object... msg){
+    private static String formatLog(String tag, Object... msg){
         Thread t = Thread.currentThread();
         StringBuilder sb = new StringBuilder();
         sb.append("[")
-                .append(TAG)
+                .append(tag)
                 .append("--")
                 .append(t.getName())
                 .append(",")

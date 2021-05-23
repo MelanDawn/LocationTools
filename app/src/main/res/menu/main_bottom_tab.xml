@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/main_bottom_tab_wifi"
+        android:icon="@drawable/ic_launcher_background"
+        android:title="@string/main_tab_wifi"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/main_bottom_tab_bt"
+        android:icon="@drawable/ic_launcher_background"
+        android:title="@string/main_tab_bt"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/main_bottom_tab_lbs"
+        android:icon="@drawable/ic_launcher_background"
+        android:title="@string/main_tab_lbs"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/main_bottom_tab_nfc"
+        android:icon="@drawable/ic_launcher_background"
+        android:title="@string/main_tab_nfc"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/main_bottom_tab_uwb"
+        android:icon="@drawable/ic_launcher_background"
+        android:title="@string/main_tab_uwb"
+        app:showAsAction="ifRoom" />
+</menu>
